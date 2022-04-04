@@ -1,0 +1,144 @@
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+#2-д моменты бинарных изображений
+#Инвариантность к поворотам
+print("Введите количество точек: ")
+count = input()
+x_array = []
+y_array = []
+for i in range(int(count)):
+    print("Введите Х")
+    inp_x = input()
+    x_array.append(int(inp_x))
+    print("Введите Y")
+    inp_y = input()
+    y_array.append(int(inp_y))
+
+print(x_array)
+print(y_array)
+average_x = 0
+for x in x_array:
+    average_x += int(x)
+average_x = average_x / int(count)
+
+average_y = 0
+for y in y_array:
+    average_y += int(y)
+average_y = average_y / int(count)
+
+
+def m(p, q, x_arr, y_arr, av_x, av_y):
+    answer = 0
+    first = 1
+    second = 1
+    for i in range(int(count)):
+        first = (int(x_arr[i]) - av_x) ** p
+        second = (int(y_arr[i]) - av_y) ** q
+        answer += first * second
+
+    return answer / int(count)
+
+
+m11 = m(1, 1, x_array, y_array, average_x, average_y)
+m20 = m(2, 0, x_array, y_array, average_x, average_y)
+m02 = m(0, 2, x_array, y_array, average_x, average_y)
+m30 = m(3, 0, x_array, y_array, average_x, average_y)
+m03 = m(0, 3, x_array, y_array, average_x, average_y)
+m21 = m(2, 1, x_array, y_array, average_x, average_y)
+m12 = m(1, 2, x_array, y_array, average_x, average_y)
+
+M1 = m20 + m02
+M2 = (m20 - m02) ** 2 + 4 * m11 ** 2
+M3 = (m30 - 3 * m12) ** 2 + (3 * m21 - m03) ** 2
+M4 = (m30 + m12) ** 2 + (m21 + m03) ** 2
+M5 = (m30 - 3 * m12) * (m30 + m12) * ((m30 + m12) ** 2 - 3 * (m21 + m03)**2) + \
+     (3 * m21 - m03) * (m21 + m03) * (3 * (m30 + m12) ** 2 - (m21 + m03) ** 2)
+M6 = (m20 + m02) * ((m30 + m12) ** 2 - (m21 + m03) ** 2 ) + 4 * m11 * (m30 + m12) * (m12 + m03)
+M7 = (3 * m21 - m03) * (m30 + m12) * ((m30 + m12) ** 2 - 3 * (m21 + m03)**2) - (m30 - 3 * m12) * \
+     (m21 + m03) * (3 * (m30 + m12) ** 2 - (m21 + m03) ** 2)
+
+print("M1 ", M1)
+print("M2 ", M2)
+print("M3 ", M3)
+print("M4 ", M4)
+print("M5 ", M5)
+print("M6 ", M6)
+print("M7 ", M7)
+print("------")
+
+plt.plot(x_array,y_array)
+plt.fill(x_array,y_array)
+plt.show()
+
+
+theta = 1.5708
+ox, oy = int(x_array[0]), int(y_array[0])
+
+
+qx = []
+qy = []
+
+for i in range(int(count)):
+    qx.append(round(ox + math.cos(theta) * (int(x_array[i]) - ox) - math.sin(theta) * (int(y_array[i]) - oy)))
+    qy.append(round(oy + math.sin(theta) * (int(x_array[i]) - ox) + math.cos(theta) * (int(y_array[i]) - oy)))
+
+average_x = 0
+for x in qx:
+    average_x += int(x)
+average_x = average_x / int(count)
+
+average_y = 0
+for y in qy:
+    average_y += int(y)
+average_y = average_y / int(count)
+
+
+# fig = [[m,n] for m,n in zip(qx,qy)]
+# plt.figure()
+plt.plot(qx,qy)
+plt.fill(qx,qy)
+plt.show()
+# t1 = plt.Polygon(fig, color="b")
+# plt.gca().add_patch(t1)
+
+
+print(qx)
+print(qy)
+
+m11 = m(1, 1, qx, qy, average_x, average_y)
+m20 = m(2, 0, qx, qy, average_x, average_y)
+m02 = m(0, 2, qx, qy, average_x, average_y)
+m30 = m(3, 0, qx, qy, average_x, average_y)
+m03 = m(0, 3, qx, qy, average_x, average_y)
+m21 = m(2, 1, qx, qy, average_x, average_y)
+m12 = m(1, 2, qx, qy, average_x, average_y)
+
+M1 = m20 + m02
+M2 = (m20 - m02) ** 2 + 4 * m11 ** 2
+M3 = (m30 - 3 * m12) ** 2 + (3 * m21 + m03) ** 2
+M4 = (m30 + m12) ** 2 + (m21 + m03) ** 2
+M5 = (m30 - 3 * m12) * (m30 + m12) * ((m30 + m12) ** 2 - 3 * (m21 + m03)**2) + \
+     (3 * m21 - m03) * (m21 + m03) * (3 * (m30 + m12) ** 2 - (m21 + m03) ** 2)
+M6 = (m20 + m02) * ((m30 + m12) ** 2 - (m21 + m03) ** 2 ) + 4 * m11 * (m30 + m12) * (m12 + m03)
+M7 = (3 * m21 - m03) * (m30 + m12) * ((m30 + m12) ** 2 - 3 * (m21 + m03)**2) - (m30 - 3 * m12) * \
+     (m21 + m03) * (3 * (m30 + m12) ** 2 - (m21 + m03) ** 2)
+
+
+print("M1 ", M1)
+print("M2 ", M2)
+print("M3 ", M3)
+print("M4 ", M4)
+print("M5 ", M5)
+print("M6 ", M6)
+print("M7 ", M7)
+plt.plot(x_array,y_array)
+plt.fill(x_array,y_array)
+plt.plot(qx,qy)
+plt.fill(qx,qy)
+plt.show()
+# x = [1, 3, 4, 5, 7]
+# y = [2, 4, 3, 4, 2]
+# [1, 5, 1, 3, 1]
+# [2, 2, 4, 2, 5]
